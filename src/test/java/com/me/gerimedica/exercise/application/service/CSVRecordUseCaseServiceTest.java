@@ -54,6 +54,28 @@ class CSVRecordUseCaseServiceTest {
     }
 
     @Test
+    void shouldNotAcceptNullOrEmptyCodeInRequestedList() {
+        var command = CSVRecordCommand.builder()
+                .source("ZIB")
+                .codeListCode("ZIB001")
+                .displayValue("regelmatig")
+                .longDescription("long description")
+                .fromDate(LocalDate.now().toString())
+                .toDate(LocalDate.now().plusMonths(3).toString())
+                .sortingPriority(10)
+                .build();
+
+        var nullList = List.of(command);
+
+        var csvRecordBusinessException = assertThrows(CSVRecordBusinessException.class,
+                () -> csvRecordUseCaseService.saveCSVRecords(nullList));
+
+        assertEquals(HttpStatus.BAD_REQUEST,csvRecordBusinessException.getErrorCode());
+        assertEquals("Null or empty code has found in the CSV file", csvRecordBusinessException.getErrorMessage());
+
+    }
+
+    @Test
     void shouldNotAcceptDuplicateCodeInDB() {
         var generatedCSVRecords = generateListOfCSVRecords(3);
         csvRecordUseCaseService.saveCSVRecords(generatedCSVRecords);

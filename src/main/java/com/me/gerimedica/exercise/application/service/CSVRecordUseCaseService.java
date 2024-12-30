@@ -9,6 +9,7 @@ import com.me.gerimedica.exercise.domain.exceptions.CSVRecordBusinessException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,11 @@ public class CSVRecordUseCaseService implements CSVRecordCommandPort {
 
     @Override
     public void saveCSVRecords(List<CSVRecordCommand> csvRecordCommands) {
+
+        if (findNullOrEmptyCodesInCSVFile(csvRecordCommands)) {
+            log.error("Null or empty code has found in the CSV file");
+            throw new CSVRecordBusinessException("Null or empty code has found in the CSV file", HttpStatus.BAD_REQUEST);
+        }
 
         var duplicateCodes = findDuplicateCodesInCSVFile(csvRecordCommands);
 
@@ -69,5 +75,9 @@ public class CSVRecordUseCaseService implements CSVRecordCommandPort {
                 .toList();
     }
 
+    private boolean findNullOrEmptyCodesInCSVFile(List<CSVRecordCommand> csvRecordCommands) {
+        return csvRecordCommands.stream()
+                .anyMatch(csvRecordCommand -> StringUtils.isBlank(csvRecordCommand.getCode()));
+    }
 
 }
