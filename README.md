@@ -9,6 +9,11 @@ This is a Spring Boot application built with Java. It allows users to upload, re
 - **Fetch Data by Code**: Retrieve a specific record using the unique `code` field.
 - **Delete All Data**: Remove all records from the database.
 
+### Prerequisites
+- JDK 17+
+- Maven
+- Any tool to test REST APIs (e.g., Postman, cURL)
+
 ## Architecture and Design
 
 The application is built using the **Ports and Adapters** (Hexagonal) architecture.
@@ -60,3 +65,13 @@ Ensure you have Maven **3.8.8** (or later) installed. Follow the [installation g
 To verify Maven installation:
 ```bash
 mvn -v
+```
+### Compile
+```bash
+mvn clean install
+```
+
+### Run The Application
+```bash
+java -jar ./target/exercise-1.0-FINAL.jar
+```
